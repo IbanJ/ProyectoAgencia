@@ -49,6 +49,13 @@ namespace ProyectoAgencia
             Linea["Fiesta"] = fiesta;
             dt.Rows.Add(Linea);
 
+            CheckBox CKBOX = new CheckBox();
+            CKBOX.Name = "CKBOXdesc"
+            Point ptck = new Point(265, (22 * x) + 10);
+            CKBOX.Location = ptck;
+            panelFiestas.Controls.Add(CKBOX);
+
+
             x++;
         }
         private void salirTB(object sender, System.EventArgs e)
@@ -60,6 +67,18 @@ namespace ProyectoAgencia
         private void limpia_form()
         {
             System.Windows.Forms.Control aux;
+            for (int i = panelFiestas.Controls.Count - 1; i >= 0; i--)
+            {
+                aux = panelFiestas.Controls[i];
+                if (aux is System.Windows.Forms.CheckBox)
+                {
+                    if (aux.Name.Substring(0, 9) == "CKBOXdesc")
+                    {
+                        panelFiestas.Controls.Remove(aux);
+                        aux.Dispose();
+                    }
+                }
+            }
 
             for (int i = panelFiestas.Controls.Count - 1; i >= 0; i--)
             {

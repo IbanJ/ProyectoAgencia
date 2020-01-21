@@ -1,0 +1,13 @@
+- Intento poner una pausa en la linea 153 (justo antes de que 
+el reader lea lo que hemos escrito
+ pero no llega a pararse)
+- Faltaria añadir los controles CKBOX y apuntar la variable que borraba
+los labels antes en el panel para que solo borre los que esten seleccionados.
+
+-23:21 - EL checkbox ya aparece al lado del textbox, ahora habria que conseguir saber
+como apuntar a ese control.
+-23:31 - Que es salirTB? Que es eso de dt.rows una columna del data table? 
+Pero cuando se añade eso cuando se sale del textbox?
+-23:40 - Linea 75 en el limpiaForm nose como terminar de apuntar a los dos controles
+que estan al lado del checkbox, nose como enumerar o nombrar cada cosa para 
+apuntarlos.
