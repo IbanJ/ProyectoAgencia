@@ -70,7 +70,13 @@ namespace ProyectoAgencia
             System.Windows.Forms.Control aux;
             int total, drTotal;
             total = dt.Rows.Count - 1;
-            for (int i = panelFiestas.Controls.Count - 1; i >= 0; i--)
+            // Limpiamos el DataTable
+
+            dt.Rows.Clear();
+
+            //Empezamos el bucle y detectamos si el control que encontramos es un CKB o no
+            // si es y esta checkeado lo quitamos, si no lo guardamos en el nuevo DataTable
+            for (int i = 0; i <= panelFiestas.Controls.Count - 1; i++)
             {
                 aux = panelFiestas.Controls[i];
                 if (aux is CheckBox)
@@ -90,7 +96,7 @@ namespace ProyectoAgencia
                             {
                                 rowsToDelete.Add(row);
                             }
-                            drTotal++;
+                            drTotal--;
                         }
 
                         foreach (DataRow row in rowsToDelete)
@@ -98,41 +104,69 @@ namespace ProyectoAgencia
                             dt.Rows.Remove(row);
                         }
                     }
-                    total--;
-                    DataTable dtaux = new DataTable();
-                    
 
+
+                    // Despues de haber limpiado el DataTable volvemos a introduzir
+                    // las filas en el ordenados.
+                    else if(aux is CheckBox)
+                    {
+                        if (((CheckBox)aux).Checked == false)
+                        {
+                            string fechalbl = panelFiestas.Controls[i - 2].Text;
+                            Label lbl = new Label();
+                            DateTime fechaParsedLbl = DateTime.Parse(fechalbl);
+                            string fiestatb = panelFiestas.Controls[i - 1].Text;
+
+                            DataRow Linea = dt.NewRow();
+                            Linea["Fecha"] = fechaParsedLbl;
+                            Linea["Fiesta"] = fiestatb;
+                            dt.Rows.Add(Linea);
+                        }
+
+                    }
+                    total++;
                 }
             }
+            // Ahora limpiamos el panel de los controles, y utilizamos los datos del
 
             for (int i = 0; i <= panelFiestas.Controls.Count - 1; i++)
             {
-                aux = panelFiestas.Controls[i];
+                panelFiestas.Controls.Remove(panelFiestas.Controls[i]);
+            }
 
-                if (aux is System.Windows.Forms.TextBox)
-                {
-                    if (aux.Name.Substring(0, 8) == "txtFecha")
-                    {
-                        aux.Name = "txtFecha" + i;
-                    }
-                }
-                if (aux is System.Windows.Forms.Label)
-                {
-                    if (aux.Name.Substring(0, 8) == "lblFecha")
-                    {
-                        aux.Name = "lblFecha" + i;
-                    }
-                }
-                else if (aux is System.Windows.Forms.CheckBox)
-                {
-                    if (aux.Name.Substring(0, 7) == "ckFecha")
-                    {
-                        aux.Name = "ckFecha" + i;
-                    }
-                }
+                // DataTable para reescribir los controles.
+
+                for (int i = 0;i < dt.Rows.Count;i++)
+            {
+                x = i;
+                DateTime newfecha = DateTime.Parse(dt.Rows[i].ToString());
+                string newFiesta = dt.Rows[i].ToString();
+
+                Label lbl = new Label();
+                lbl.Name = "lblFecha" + x;
+                lbl.Text = newfecha.ToShortDateString();
+                lbl.Size = new Size(65, 20);
+                Point pl = new Point(10, (22 * x) + 4 + 10);
+                lbl.Location = pl;
+                panelFiestas.Controls.Add(lbl);
+
+                TextBox tb = new TextBox();
+                tb.Name = "txtFecha" + x;
+                tb.Text = newFiesta;
+                tb.Size = new Size(180, 20);
+                Point pt = new Point(75, (22 * x) + 10);
+                tb.Location = pt;
+                tb.Leave += new System.EventHandler(this.salirTB);
+                panelFiestas.Controls.Add(tb);
+
+                CheckBox CKBOX = new CheckBox();
+                CKBOX.Name = "ckFecha" + x;
+                Point ptck = new Point(265, (22 * x) + 10);
+                CKBOX.Location = ptck;
+                panelFiestas.Controls.Add(CKBOX);
+
             }
             //dt.AcceptChanges();
-            //dt.Rows.Clear();
             //x = 0;
         }
 
