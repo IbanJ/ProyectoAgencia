@@ -50,7 +50,7 @@ namespace ProyectoAgencia
             dt.Rows.Add(Linea);
 
             CheckBox CKBOX = new CheckBox();
-            CKBOX.Name = "CKBOXdesc"
+            CKBOX.Name = "ckFecha" + x;
             Point ptck = new Point(265, (22 * x) + 10);
             CKBOX.Location = ptck;
             panelFiestas.Controls.Add(CKBOX);
@@ -60,6 +60,7 @@ namespace ProyectoAgencia
         }
         private void salirTB(object sender, System.EventArgs e)
         {
+            // El numero del dtRow es el del mismo textbox que se acaba de salir de escribir
             TextBox tb = sender as TextBox;
             dt.Rows[Convert.ToInt32(tb.Name.Substring(8))]["Fiesta"] = tb.Text;
         }
@@ -67,46 +68,72 @@ namespace ProyectoAgencia
         private void limpia_form()
         {
             System.Windows.Forms.Control aux;
+            int total, drTotal;
+            total = dt.Rows.Count - 1;
             for (int i = panelFiestas.Controls.Count - 1; i >= 0; i--)
             {
                 aux = panelFiestas.Controls[i];
-                if (aux is System.Windows.Forms.CheckBox)
+                if (aux is CheckBox)
                 {
-                    if (aux.Name.Substring(0, 9) == "CKBOXdesc")
+                    if (((CheckBox)aux).Checked == true)
                     {
-                        panelFiestas.Controls.Remove(aux);
-                        aux.Dispose();
+                        drTotal = 0;
+                        panelFiestas.Controls.Remove(panelFiestas.Controls[i]);
+                        panelFiestas.Controls.Remove(panelFiestas.Controls[i - 1]);
+                        panelFiestas.Controls.Remove(panelFiestas.Controls[i - 2]);
+                        i = i - 2;
+
+                        List<DataRow> rowsToDelete = new List<DataRow>();
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            if (drTotal == total)
+                            {
+                                rowsToDelete.Add(row);
+                            }
+                            drTotal++;
+                        }
+
+                        foreach (DataRow row in rowsToDelete)
+                        {
+                            dt.Rows.Remove(row);
+                        }
                     }
+                    total--;
+                    DataTable dtaux = new DataTable();
+                    
+
                 }
             }
 
-            for (int i = panelFiestas.Controls.Count - 1; i >= 0; i--)
+            for (int i = 0; i <= panelFiestas.Controls.Count - 1; i++)
             {
                 aux = panelFiestas.Controls[i];
+
                 if (aux is System.Windows.Forms.TextBox)
                 {
                     if (aux.Name.Substring(0, 8) == "txtFecha")
                     {
-                        panelFiestas.Controls.Remove(aux);
-                        aux.Dispose();
+                        aux.Name = "txtFecha" + i;
                     }
                 }
-            }
-
-            for (int i = panelFiestas.Controls.Count - 1; i >= 0; i--)
-            {
-                aux = panelFiestas.Controls[i];
                 if (aux is System.Windows.Forms.Label)
                 {
                     if (aux.Name.Substring(0, 8) == "lblFecha")
                     {
-                        panelFiestas.Controls.Remove(aux);
-                        aux.Dispose();
+                        aux.Name = "lblFecha" + i;
+                    }
+                }
+                else if (aux is System.Windows.Forms.CheckBox)
+                {
+                    if (aux.Name.Substring(0, 7) == "ckFecha")
+                    {
+                        aux.Name = "ckFecha" + i;
                     }
                 }
             }
-            dt.Rows.Clear();
-            x = 0;
+            //dt.AcceptChanges();
+            //dt.Rows.Clear();
+            //x = 0;
         }
 
         private void calFiestas_DateSelected(object sender, DateRangeEventArgs e)
@@ -139,7 +166,7 @@ namespace ProyectoAgencia
             dt.Columns.Add("Fecha", Type.GetType("System.DateTime"));
             dt.Columns.Add("Fiesta", Type.GetType("System.String"));
 
-            ParametrosConexion.Add("Data Source", "DESKTOP-CPL9QC4");
+            ParametrosConexion.Add("Data Source", "SEGUNDO150");
             ParametrosConexion.Add("Initial Catalog", "AVAN_iban");
             ParametrosConexion.Add("Integrated Security", "SSPI");
 
