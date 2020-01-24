@@ -68,7 +68,7 @@ namespace ProyectoAgencia
         private void limpia_form()
         {
             System.Windows.Forms.Control aux;
-            int total, drTotal;
+            int total;
             total = dt.Rows.Count - 1;
             // Limpiamos el DataTable
 
@@ -76,57 +76,45 @@ namespace ProyectoAgencia
 
             //Empezamos el bucle y detectamos si el control que encontramos es un CKB o no
             // si es y esta checkeado lo quitamos, si no lo guardamos en el nuevo DataTable
-            for (int i = 0; i <= panelFiestas.Controls.Count - 1; i++)
+            for (int i = panelFiestas.Controls.Count - 1; i >= 0; i--)
             {
                 aux = panelFiestas.Controls[i];
                 if (aux is CheckBox)
                 {
                     if (((CheckBox)aux).Checked == true)
                     {
-                        drTotal = 0;
+
                         panelFiestas.Controls.Remove(panelFiestas.Controls[i]);
                         panelFiestas.Controls.Remove(panelFiestas.Controls[i - 1]);
                         panelFiestas.Controls.Remove(panelFiestas.Controls[i - 2]);
                         i = i - 2;
-
-                        List<DataRow> rowsToDelete = new List<DataRow>();
-                        foreach (DataRow row in dt.Rows)
-                        {
-                            if (drTotal == total)
-                            {
-                                rowsToDelete.Add(row);
-                            }
-                            drTotal--;
-                        }
-
-                        foreach (DataRow row in rowsToDelete)
-                        {
-                            dt.Rows.Remove(row);
-                        }
                     }
 
-
-                    // Despues de haber limpiado el DataTable volvemos a introduzir
-                    // las filas en el ordenados.
-                    else if(aux is CheckBox)
-                    {
-                        if (((CheckBox)aux).Checked == false)
-                        {
-                            string fechalbl = panelFiestas.Controls[i - 2].Text;
-                            Label lbl = new Label();
-                            DateTime fechaParsedLbl = DateTime.Parse(fechalbl);
-                            string fiestatb = panelFiestas.Controls[i - 1].Text;
-
-                            DataRow Linea = dt.NewRow();
-                            Linea["Fecha"] = fechaParsedLbl;
-                            Linea["Fiesta"] = fiestatb;
-                            dt.Rows.Add(Linea);
-                        }
-
-                    }
-                    total++;
                 }
             }
+            for (int i = 0; i <= panelFiestas.Controls.Count - 1; i++)
+            {
+                aux = panelFiestas.Controls[i];
+                // Despues de haber limpiado el DataTable volvemos a introduzir
+                // las filas en el ordenados.
+                if (aux is CheckBox)
+                {
+                    if (((CheckBox)aux).Checked == false)
+                    {
+                        string fechalbl = panelFiestas.Controls[i - 2].Text;
+                        Label lbl = new Label();
+                        DateTime fechaParsedLbl = DateTime.Parse(fechalbl);
+                        string fiestatb = panelFiestas.Controls[i - 1].Text;
+
+                        DataRow Linea = dt.NewRow();
+                        Linea["Fecha"] = fechaParsedLbl;
+                        Linea["Fiesta"] = fiestatb;
+                        dt.Rows.Add(Linea);
+                    }
+
+                }
+                    total++;
+                }
             // Ahora limpiamos el panel de los controles, y utilizamos los datos del
 
             for (int i = 0; i <= panelFiestas.Controls.Count - 1; i++)
@@ -136,10 +124,11 @@ namespace ProyectoAgencia
 
                 // DataTable para reescribir los controles.
 
-                for (int i = 0;i < dt.Rows.Count;i++)
+            for (int i = 0;i < dt.Rows.Count;i++)
             {
                 x = i;
-                DateTime newfecha = DateTime.Parse(dt.Rows[i].ToString());
+                string fechaString = dt.Rows[i].ToString();
+                DateTime newfecha = DateTime.Parse(fechaString);
                 string newFiesta = dt.Rows[i].ToString();
 
                 Label lbl = new Label();
