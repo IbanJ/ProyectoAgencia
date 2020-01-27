@@ -103,7 +103,7 @@ namespace ProyectoAgencia
                     {
                         string fechalbl = panelFiestas.Controls[i - 2].Text;
                         Label lbl = new Label();
-                        DateTime fechaParsedLbl = DateTime.Parse(fechalbl);
+                        DateTime fechaParsedLbl = Convert.ToDateTime(fechalbl);
                         string fiestatb = panelFiestas.Controls[i - 1].Text;
 
                         DataRow Linea = dt.NewRow();
@@ -124,12 +124,12 @@ namespace ProyectoAgencia
 
                 // DataTable para reescribir los controles.
 
-            for (int i = 0;i < dt.Rows.Count;i++)
+            for (int i = 0;i < dt.Rows.Count - 1;i++)
             {
                 x = i;
-                string fechaString = dt.Rows[i].ToString();
-                DateTime newfecha = DateTime.Parse(fechaString);
-                string newFiesta = dt.Rows[i].ToString();
+                string fechaString = dt.Rows[0][i].ToString();
+                DateTime newfecha = Convert.ToDateTime(fechaString);
+                string newFiesta = dt.Rows[1][i].ToString();
 
                 Label lbl = new Label();
                 lbl.Name = "lblFecha" + x;
